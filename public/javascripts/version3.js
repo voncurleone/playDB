@@ -1,5 +1,5 @@
 //routes
-//const validateLoginRoute = document.getElementById("validate-login-route").value;
+const validateLoginRoute = document.getElementById("validate-login-route").value;
 //const taskListRoute = document.getElementById("task-list-route").value;
 //const logoutRoute = document.getElementById("logout-route").value;
 //const markTaskRoute = document.getElementById("mark-task-route").value;

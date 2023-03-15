@@ -41,14 +41,23 @@ class HomeController @Inject()(protected val dbcp: DatabaseConfigProvider, val c
     Ok(views.html.page())
   }
 
+  def validateLogin = Action.async { implicit request =>
+    withJson[LoginData] { data =>
+      model.validateUser(data.username, data.password).map {
+        case Some(userid) => Ok(Json.toJson(true))
+          .withSession("username" -> data.username, "userid" -> userid.toString, "csrfToken" -> play.filters.csrf.CSRF.getToken.get.value)
+        case None => Ok(Json.toJson(false))
+      }
+    }
+  }
+
   def createUser = Action.async { implicit request =>
     withJson[LoginData] { data =>
       model.createUser(data.username, data.password).map {
         case Some(userid) => Ok(Json.toJson(true))
-          .withSession("username" -> data.username, "userid" -> userid.toString, "CsrfToken" -> play.filters.csrf.CSRF.getToken.get.value)
+          .withSession("username" -> data.username, "userid" -> userid.toString, "csrfToken" -> play.filters.csrf.CSRF.getToken.get.value)
         case None => Ok(Json.toJson(false))
       }
-      //Future.successful(Ok(Json.toJson(false)))
     }
   }
 }

@@ -9,7 +9,13 @@ import model.DBModel.LoginData
 import play.api.libs.json.Json
 
 class DBModel(db: Database)(implicit ec: ExecutionContext){
-  def validateUser(username: String, password: String): Future[Option[Int]] = ???
+  def validateUser(username: String, password: String): Future[Option[Int]] = {
+    val res = db.run(Users.filter(_.username === username).result)
+    res.map(_.headOption.flatMap { row =>
+      if(BCrypt.checkpw(password, row.password)) Some(row.id)
+      else None
+    })
+  }
 
   //returns userId in the option
   //will be used for session instead of username
