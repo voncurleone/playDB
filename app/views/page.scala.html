@@ -1,0 +1,55 @@
+@()(implicit flash: Flash, requestHeader: RequestHeader)
+
+@main("Task List Json") {
+  <div id="login-div">
+    <h2>Login v3</h2>
+    Username: <input type="text" id="login-username">
+    <br>
+    Password: <input type="password" id="login-password">
+    <br>
+    <button onclick="login()">Login</button>
+
+    <br>
+    <div id="login-message"></div>
+
+    <br>
+    <h2>Create user</h2>
+    Username: <input type="text" id="create-username">
+    <br>
+    Password: <input type="password" id="create-password">
+    <br>
+    <button onclick="createUser()">Create User</button>
+
+    <br>
+    <div id="create-user-message"></div>
+  </div>
+
+  <div id="task-list-div" hidden>
+    <h2>Task List v3</h2>
+    <div id="task-message"></div>
+
+    <ul id="task-list-ul">
+    </ul>
+
+    <br>
+    <h2>Add Task</h2>
+    Task: <input type="text" id="task-text">
+    <br>
+    Marked: <input type="checkbox" id="task-marked">
+    <br>
+    <button onclick="addTask()">Add</button>
+  </div>
+
+  <div id="logout-div" hidden>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+    <!-- csrf token -->
+  <input type="hidden" id="csrf-token" value="@helper.CSRF.getToken.value">
+
+    <!-- routes -->
+  <input type="hidden" id="create-user-route" value="@routes.HomeController.createUser">
+
+    <!-- js -->
+  <script src="@routes.Assets.versioned("javascripts/version3.js")"></script>
+}
