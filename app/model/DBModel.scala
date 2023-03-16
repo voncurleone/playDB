@@ -5,7 +5,7 @@ import slick.jdbc.PostgresProfile.api._
 import scala.concurrent.{ExecutionContext, Future}
 import org.mindrot.jbcrypt.BCrypt
 import Tables._
-import model.DBModel.LoginData
+import model.DBModel.{LoginData, Task}
 import play.api.libs.json.Json
 
 class DBModel(db: Database)(implicit ec: ExecutionContext){
@@ -37,6 +37,17 @@ class DBModel(db: Database)(implicit ec: ExecutionContext){
       }
     }
   }
+
+  def getTasks(username: String): Future[Seq[Task]] = {
+    db.run((for {
+      user <- Users if user.username === username
+      item <- Items if item.userId === user.id
+    } yield item).result).map { tasks => tasks.map { task => Task(task.text.getOrElse(""), task.marked)} }
+  }
+
+  def addTask(id: Int, task: Task): Future[Boolean] = {
+    db.run( Items += ItemsRow(-1, id, Some(task.text), task.marked)).map(_ > 0)
+  }
 }
 
 object DBModel {
@@ -44,4 +55,7 @@ object DBModel {
 
   case class LoginData(username: String, password: String)
   implicit val loginDataReads = Json.reads[LoginData]
+
+  case class Task(text: String, marked: Boolean)
+  implicit val taskSeqWrites = Json.writes[Task]
 }

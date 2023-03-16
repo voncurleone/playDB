@@ -6,6 +6,7 @@ import model.DBModel._
 import javax.inject._
 import play.api._
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.libs.json.{JsError, JsSuccess, Json, Reads}
 import play.api.mvc._
 import slick.jdbc.JdbcProfile
@@ -59,5 +60,17 @@ class HomeController @Inject()(protected val dbcp: DatabaseConfigProvider, val c
         case None => Ok(Json.toJson(false))
       }
     }
+  }
+
+  def getTasks = Action.async { implicit request =>
+    withUserSession { username =>
+      model.getTasks(username).map { tasks =>
+        Ok(Json.toJson(tasks))
+      }
+    }
+  }
+
+  def logout = Action { implicit request =>
+    Ok(Json.toJson(true)).withSession(request.session - "username" - "id")
   }
 }

@@ -1,7 +1,7 @@
 //routes
 const validateLoginRoute = document.getElementById("validate-login-route").value;
-//const taskListRoute = document.getElementById("task-list-route").value;
-//const logoutRoute = document.getElementById("logout-route").value;
+const taskListRoute = document.getElementById("task-list-route").value;
+const logoutRoute = document.getElementById("logout-route").value;
 //const markTaskRoute = document.getElementById("mark-task-route").value;
 //const removeTaskRoute = document.getElementById("remove-task-route").value;
 const createUserRoute = document.getElementById("create-user-route").value;
