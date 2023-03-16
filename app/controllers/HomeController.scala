@@ -35,11 +35,11 @@ class HomeController @Inject()(protected val dbcp: DatabaseConfigProvider, val c
   }
 
   private def withUserSession(f: String => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
-    request.session.get("username").map(f).getOrElse(Future.successful(Redirect(routes.HomeController.index)))
+    request.session.get("username").map(f).getOrElse(Future.successful(Ok(Json.toJson(false))))
   }
 
   private def withUserIdSession(f: Int => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
-    request.session.get("userid").map(id => f(id.toInt)).getOrElse(Future.successful(Redirect(routes.HomeController.index)))
+    request.session.get("userid").map(id => f(id.toInt)).getOrElse(Future.successful(Ok(Json.toJson(false))))
   }
 
   def index() = Action { implicit request: Request[AnyContent] =>
@@ -82,8 +82,13 @@ class HomeController @Inject()(protected val dbcp: DatabaseConfigProvider, val c
     withUserIdSession { id =>
       withJson[TaskForm] { task =>
         model.addTask(id, Task(task.task, task.marked)).map(res => Ok(Json.toJson(res)))
-        //Future.successful(Ok(Json.toJson(false)))
       }
+    }
+  }
+
+  def markTask = Action.async { implicit request =>
+    withUserIdSession { id =>
+
     }
   }
 }

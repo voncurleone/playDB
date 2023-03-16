@@ -48,6 +48,11 @@ class DBModel(db: Database)(implicit ec: ExecutionContext){
   def addTask(id: Int, task: Task): Future[Boolean] = {
     db.run( Items += ItemsRow(-1, id, Some(task.text), task.marked)).map(_ > 0)
   }
+
+  def markTask(id: Int, row: Int): Future[Boolean] = {
+    //todo: have get tasks return item_id aswell. have it in a hidden input and send that val instead of the row
+    ???
+  }
 }
 
 object DBModel {
