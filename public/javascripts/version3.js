@@ -5,7 +5,7 @@ const logoutRoute = document.getElementById("logout-route").value;
 //const markTaskRoute = document.getElementById("mark-task-route").value;
 //const removeTaskRoute = document.getElementById("remove-task-route").value;
 const createUserRoute = document.getElementById("create-user-route").value;
-//const addTaskRoute = document.getElementById("add-task-route").value;
+const addTaskRoute = document.getElementById("add-task-route").value;
 
 //csrf token
 const csrfToken3 = document.getElementById("csrf-token").value;
@@ -90,14 +90,14 @@ function loadTasks() {
         ul.innerHTML = ""
 
         for( let i = 0; i < data.length; i++) {
-            console.log(data[i]);
+            //console.log(data[i]);
             const li = document.createElement("li")
 
-            const text = document.createTextNode(data[i][0])
+            const text = document.createTextNode(data[i].text)
             const textBold = document.createElement("b")
             textBold.appendChild(text)
 
-            if(data[i][1]) {
+            if(data[i].marked) {
                 li.appendChild(textBold)
             } else {
                 li.appendChild(text)

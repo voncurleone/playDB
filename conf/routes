@@ -9,6 +9,7 @@ POST    /createUser                 controllers.HomeController.createUser
 POST    /validateLogin              controllers.HomeController.validateLogin
 GET     /getTasks                   controllers.HomeController.getTasks
 GET     /logout                     controllers.HomeController.logout
+POST    /addTask                    controllers.HomeController.addTask
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

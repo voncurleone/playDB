@@ -57,5 +57,8 @@ object DBModel {
   implicit val loginDataReads = Json.reads[LoginData]
 
   case class Task(text: String, marked: Boolean)
-  implicit val taskSeqWrites = Json.writes[Task]
+  implicit val taskWrites = Json.writes[Task]
+
+  case class TaskForm(task: String, marked: Boolean)
+  implicit val taskDataReads= Json.reads[TaskForm]
 }

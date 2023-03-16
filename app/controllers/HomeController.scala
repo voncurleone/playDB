@@ -29,13 +29,17 @@ class HomeController @Inject()(protected val dbcp: DatabaseConfigProvider, val c
     request.body.asJson.map { body =>
       Json.fromJson[A](body) match {
         case JsSuccess(value, path) => f(value)
-        case JsError(errors) => Future.successful(Redirect(routes.HomeController.index))
+        case JsError(errors) => Future.successful(Ok(Json.toJson(false)))
       }
-    }.getOrElse(Future.successful(Redirect(routes.HomeController.index)))
+    }.getOrElse(Future.successful(Ok(Json.toJson(false))))
   }
 
   private def withUserSession(f: String => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
     request.session.get("username").map(f).getOrElse(Future.successful(Redirect(routes.HomeController.index)))
+  }
+
+  private def withUserIdSession(f: Int => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
+    request.session.get("userid").map(id => f(id.toInt)).getOrElse(Future.successful(Redirect(routes.HomeController.index)))
   }
 
   def index() = Action { implicit request: Request[AnyContent] =>
@@ -72,5 +76,14 @@ class HomeController @Inject()(protected val dbcp: DatabaseConfigProvider, val c
 
   def logout = Action { implicit request =>
     Ok(Json.toJson(true)).withSession(request.session - "username" - "id")
+  }
+
+  def addTask = Action.async { implicit request =>
+    withUserIdSession { id =>
+      withJson[TaskForm] { task =>
+        model.addTask(id, Task(task.task, task.marked)).map(res => Ok(Json.toJson(res)))
+        //Future.successful(Ok(Json.toJson(false)))
+      }
+    }
   }
 }
