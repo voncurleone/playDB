@@ -69,7 +69,7 @@ class HomeController @Inject()(protected val dbcp: DatabaseConfigProvider, val c
   def getTasks = Action.async { implicit request =>
     withUserSession { username =>
       model.getTasks(username).map { tasks =>
-        Ok(Json.toJson(tasks))
+        Ok(Json.toJson(tasks.sorted))
       }
     }
   }
@@ -81,14 +81,24 @@ class HomeController @Inject()(protected val dbcp: DatabaseConfigProvider, val c
   def addTask = Action.async { implicit request =>
     withUserIdSession { id =>
       withJson[TaskForm] { task =>
-        model.addTask(id, Task(task.task, task.marked)).map(res => Ok(Json.toJson(res)))
+        model.addTask(id, TaskForm(task.text, task.marked)).map(res => Ok(Json.toJson(res)))
       }
     }
   }
 
   def markTask = Action.async { implicit request =>
-    withUserIdSession { id =>
+    withUserIdSession { userId =>
+      withJson[Int] { taskId =>
+        model.markTask(userId, taskId).map(result => Ok(Json.toJson(result)))
+      }
+    }
+  }
 
+  def removeTask = Action.async { implicit request =>
+    withUserIdSession { userId =>
+      withJson[Int] { taskId =>
+        model.removeTask(userId, taskId).map(result => Ok(Json.toJson(result)))
+      }
     }
   }
 }

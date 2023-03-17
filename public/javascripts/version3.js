@@ -2,8 +2,8 @@
 const validateLoginRoute = document.getElementById("validate-login-route").value;
 const taskListRoute = document.getElementById("task-list-route").value;
 const logoutRoute = document.getElementById("logout-route").value;
-//const markTaskRoute = document.getElementById("mark-task-route").value;
-//const removeTaskRoute = document.getElementById("remove-task-route").value;
+const markTaskRoute = document.getElementById("mark-task-route").value;
+const removeTaskRoute = document.getElementById("remove-task-route").value;
 const createUserRoute = document.getElementById("create-user-route").value;
 const addTaskRoute = document.getElementById("add-task-route").value;
 
@@ -11,7 +11,7 @@ const addTaskRoute = document.getElementById("add-task-route").value;
 const csrfToken3 = document.getElementById("csrf-token").value;
 
 //load page
-//loadPage(); todo: uncomment once controller is implemented
+loadPage();
 
 function clearAddUserForm() {
     document.getElementById("create-username").value = "";
@@ -90,7 +90,7 @@ function loadTasks() {
         ul.innerHTML = ""
 
         for( let i = 0; i < data.length; i++) {
-            //console.log(data[i]);
+            console.log(data[i]);
             const li = document.createElement("li")
 
             const text = document.createTextNode(data[i].text)
@@ -108,9 +108,9 @@ function loadTasks() {
             const space = document.createTextNode("\t")
 
             mark.innerHTML = "mark"
-            mark.onclick = e => { markItem(i) }
+            mark.onclick = e => { markItem(data[i].taskId) }
             remove.innerHTML = "remove"
-            remove.onclick = e => { removeItem(i) }
+            remove.onclick = e => { removeItem(data[i].taskId) }
 
             li.appendChild(space)
             li.appendChild(mark)
@@ -189,15 +189,15 @@ function createUser() {
 }
 
 function addTask() {
-    const task = document.getElementById("task-text").value;
+    const text = document.getElementById("task-text").value;
     const marked = document.getElementById("task-marked").checked;
     document.getElementById("task-message").innerHTML = "";
-    console.log("adding task: " + task + ", " + marked)
+    console.log("adding task: " + text + ", " + marked)
 
     fetch(addTaskRoute, {
         method: "post",
         headers: { "Content-Type": "application/json", "Csrf-Token": csrfToken3},
-        body: JSON.stringify({task, marked})
+        body: JSON.stringify({text, marked})
     }).then(result => result.json()).then( data => {
         if(data) {
             loadTasks();

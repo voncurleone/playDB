@@ -11,6 +11,7 @@ GET     /getTasks                   controllers.HomeController.getTasks
 GET     /logout                     controllers.HomeController.logout
 POST    /addTask                    controllers.HomeController.addTask
 POST    /markTask                   controllers.HomeController.markTask
+POST    /removeTask                 controllers.HomeController.removeTask
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

@@ -5,7 +5,7 @@ import slick.jdbc.PostgresProfile.api._
 import scala.concurrent.{ExecutionContext, Future}
 import org.mindrot.jbcrypt.BCrypt
 import Tables._
-import model.DBModel.{LoginData, Task}
+import model.DBModel.{LoginData, Task, TaskForm}
 import play.api.libs.json.Json
 
 class DBModel(db: Database)(implicit ec: ExecutionContext){
@@ -42,16 +42,30 @@ class DBModel(db: Database)(implicit ec: ExecutionContext){
     db.run((for {
       user <- Users if user.username === username
       item <- Items if item.userId === user.id
-    } yield item).result).map { tasks => tasks.map { task => Task(task.text.getOrElse(""), task.marked)} }
+    } yield item).result).map { tasks => tasks.map { task => Task(task.itemId, task.text.getOrElse(""), task.marked)} }
   }
 
-  def addTask(id: Int, task: Task): Future[Boolean] = {
+  def addTask(id: Int, task: TaskForm): Future[Boolean] = {
     db.run( Items += ItemsRow(-1, id, Some(task.text), task.marked)).map(_ > 0)
   }
 
-  def markTask(id: Int, row: Int): Future[Boolean] = {
-    //todo: have get tasks return item_id aswell. have it in a hidden input and send that val instead of the row
-    ???
+  def markTask(userId: Int, taskId: Int): Future[Boolean] = {
+    val query = for {
+      item <- Items if item.userId === userId && item.itemId === taskId
+    } yield item.marked
+
+    db.run(query.result).flatMap { result =>
+      result.headOption match {
+        case Some(marked) => db.run(query.update(!marked)).map(_ > 0)
+        case None => Future.successful(false)
+      }
+    }
+  }
+
+  def removeTask(userId: Int, taskId: Int): Future[Boolean] = {
+    db.run((for{
+      item <- Items if item.userId === userId && item.itemId === taskId
+    } yield item).delete).map(_ > 0)
   }
 }
 
@@ -61,9 +75,10 @@ object DBModel {
   case class LoginData(username: String, password: String)
   implicit val loginDataReads = Json.reads[LoginData]
 
-  case class Task(text: String, marked: Boolean)
+  case class Task(taskId: Int, text: String, marked: Boolean)
   implicit val taskWrites = Json.writes[Task]
+  implicit val taskOrdering: Ordering[Task] = Ordering.by(_.taskId)
 
-  case class TaskForm(task: String, marked: Boolean)
+  case class TaskForm(text: String, marked: Boolean)
   implicit val taskDataReads= Json.reads[TaskForm]
 }
