@@ -1,0 +1,20 @@
+@()(implicit flash: Flash, requestHeader: RequestHeader)
+
+@main("react taskdb") {
+  <div id="react-component"></div>
+
+  <!-- csrf token -->
+  <input type="hidden" id="csrf-token" value="@helper.CSRF.getToken.value">
+
+  <!-- routes -->
+  <input type="hidden" id="create-user-route" value="@routes.HomeController.createUser">
+  <input type="hidden" id="validate-login-route" value="@routes.HomeController.validateLogin">
+  <input type="hidden" id="task-list-route" value="@routes.HomeController.getTasks">
+  <input type="hidden" id="logout-route" value="@routes.HomeController.logout">
+  <input type="hidden" id="add-task-route" value="@routes.HomeController.addTask">
+  <input type="hidden" id="mark-task-route" value="@routes.HomeController.markTask">
+  <input type="hidden" id="remove-task-route" value="@routes.HomeController.removeTask">
+
+    <!-- js -->
+  <script src="@routes.Assets.versioned("javascripts/react.js")"></script>
+}
