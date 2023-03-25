@@ -28,4 +28,8 @@ class ReactController @Inject()(protected val dbcp: DatabaseConfigProvider, val 
       }
     }.getOrElse(Future.successful(Ok(Json.toJson(false))))
   }
+
+  def index = Action { implicit request =>
+    Ok(views.html.reactIndex())
+  }
 }
