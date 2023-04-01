@@ -1,4 +1,4 @@
-import React from "javascripts/react";
+import React from "react";
 
 ReactDOM.render(
   React.createElement(<div>test</div>),
