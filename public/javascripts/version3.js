@@ -32,7 +32,7 @@ function resetMessages() {
 function toTaskView() {
     document.getElementById("login-div").hidden = true;
     document.getElementById("task-list-div").hidden = false;
-    document.getElementById("logout-div").hidden = false;
+    //document.getElementById("logout-div").hidden = false;
 
     resetMessages();
 }
@@ -40,7 +40,7 @@ function toTaskView() {
 function toLoginView() {
     document.getElementById("login-div").hidden = false;
     document.getElementById("task-list-div").hidden = true;
-    document.getElementById("logout-div").hidden = true;
+    //document.getElementById("logout-div").hidden = true;
 }
 
 function loadPage() {
